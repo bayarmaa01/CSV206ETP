@@ -1,6 +1,3 @@
-Here’s the **Unit_4.md** file written in the same detailed and structured format as **Unit_1.md** for **DevOps Automation Lab**, focusing on **System Administration and Security**:
-
-```markdown
 # Unit 4: System Administration and Security
 
 ---
@@ -38,7 +35,7 @@ By the end of this unit, you will:
 1. Create a file named `block_commands.sh`:
    ```bash
    nano block_commands.sh
-   ```
+
 
 2. Add the following code to the file:
    ```bash
