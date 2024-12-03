@@ -110,31 +110,31 @@ We will create a script to back up a MySQL database and move the backup file to 
    ```  
 
 2. Add the following code:  
-   ```#!/bin/bash
+   ```bash
+   #!/bin/bash
 
-# Configuration
-BACKUP_DIR="$HOME/backups"  # Change to a valid directory in your home
-DB_NAME="your_database_name"
-DB_USER="your_mysql_username"
-DB_PASSWORD="your_mysql_password"
+   # Configuration
+   BACKUP_DIR="/path/to/backup/directory"
+   DB_NAME="your_database_name"
+   DB_USER="your_mysql_username"
+   DB_PASSWORD="your_mysql_password"
 
-# Create the backup directory if it doesn't exist
-mkdir -p "$BACKUP_DIR"
+   # Create the backup directory if it doesn't exist
+   mkdir -p "$BACKUP_DIR"
 
-# Generate backup file name with timestamp
-TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
-BACKUP_FILE="$BACKUP_DIR/${DB_NAME}_backup_$TIMESTAMP.sql"
+   # Generate backup file name with timestamp
+   TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
+   BACKUP_FILE="$BACKUP_DIR/${DB_NAME}_backup_$TIMESTAMP.sql"
 
-# Take the MySQL backup
-mysqldump -u "$DB_USER" -p"$DB_PASSWORD" "$DB_NAME" > "$BACKUP_FILE"
+   # Take the MySQL backup
+   mysqldump -u "$DB_USER" -p"$DB_PASSWORD" "$DB_NAME" > "$BACKUP_FILE"
 
-if [ $? -eq 0 ]; then
-    echo "MySQL backup successful: $BACKUP_FILE"
-else
-    echo "MySQL backup failed!"
-    exit 1
-fi
-
+   if [ $? -eq 0 ]; then
+       echo "MySQL backup successful: $BACKUP_FILE"
+   else
+       echo "MySQL backup failed!"
+       exit 1
+   fi
    ```  
 
 3. Save and exit the editor (`CTRL+O`, `CTRL+X`).  
