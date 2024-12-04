@@ -200,7 +200,142 @@ By the end of this lab, you will:
    Create a unified script to monitor a directory and back up new files automatically.  
 
 ---
+Here are the enhanced scripts with explanations for each exercise:
 
+---
+
+### 1. **Enhance the `check_file.sh` script to handle directories**
+
+#### Script:
+```bash
+#!/bin/bash
+# Script to check if the input is a directory
+
+read -p "Enter the path to check: " path
+
+if [ -d "$path" ]; then
+    echo "The path '$path' is a directory."
+else
+    echo "The path '$path' is NOT a directory."
+fi
+```
+
+#### Explanation:
+- `-d "$path"`: Checks if the provided path is a directory.
+- If the condition is true, it confirms the path is a directory; otherwise, it prints an error message.
+
+---
+
+### 2. **Update the `backup_files.sh` script to compress backups**
+
+#### Script:
+```bash
+#!/bin/bash
+# Script to back up files and compress them
+
+SOURCE_DIR="/path/to/source"
+BACKUP_DIR="/path/to/backup"
+TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
+ARCHIVE_NAME="backup_$TIMESTAMP.tar.gz"
+
+# Create backup directory if it doesn't exist
+mkdir -p "$BACKUP_DIR"
+
+# Copy files to backup directory
+cp -r "$SOURCE_DIR"/* "$BACKUP_DIR/"
+
+# Compress the backup directory
+tar -czf "$BACKUP_DIR/$ARCHIVE_NAME" -C "$BACKUP_DIR" .
+
+# Confirm backup
+if [ $? -eq 0 ]; then
+    echo "Backup and compression successful: $BACKUP_DIR/$ARCHIVE_NAME"
+else
+    echo "Backup failed."
+fi
+```
+
+#### Explanation:
+- `mkdir -p "$BACKUP_DIR"`: Ensures the backup directory exists.
+- `tar -czf "$ARCHIVE_NAME"`: Creates a compressed `.tar.gz` archive of the backup directory.
+- The script copies files from the source to the backup directory and compresses the result.
+
+---
+
+### 3. **Create a script to monitor CPU usage**
+
+#### Script:
+```bash
+#!/bin/bash
+# Script to monitor CPU usage
+
+THRESHOLD=80  # Set CPU usage threshold
+
+while true; do
+    CPU_USAGE=$(top -bn1 | grep "Cpu(s)" | awk '{print $2 + $4}')
+    echo "Current CPU usage: $CPU_USAGE%"
+
+    if (( ${CPU_USAGE%.*} > THRESHOLD )); then
+        echo "Warning: CPU usage is above $THRESHOLD%!"
+    fi
+
+    sleep 5  # Check every 5 seconds
+done
+```
+
+#### Explanation:
+- `top -bn1`: Runs `top` in batch mode to get CPU stats.
+- `awk '{print $2 + $4}'`: Extracts the user and system CPU usage.
+- `${CPU_USAGE%.*}`: Removes the decimal for integer comparison.
+- If usage exceeds the threshold, a warning is printed.
+
+---
+
+### 4. **Combine `monitor_directory.sh` and `backup_files.sh`**
+
+#### Script:
+```bash
+#!/bin/bash
+# Unified script to monitor a directory and back up new files
+
+MONITOR_DIR="/path/to/monitor"
+BACKUP_DIR="/path/to/backup"
+TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
+ARCHIVE_NAME="backup_$TIMESTAMP.tar.gz"
+
+# Create backup directory if it doesn't exist
+mkdir -p "$BACKUP_DIR"
+
+# Monitor directory for new files
+inotifywait -m -e create "$MONITOR_DIR" --format '%w%f' | while read NEW_FILE; do
+    echo "New file detected: $NEW_FILE"
+
+    # Copy new file to backup directory
+    cp "$NEW_FILE" "$BACKUP_DIR"
+
+    # Compress the backup directory
+    tar -czf "$BACKUP_DIR/$ARCHIVE_NAME" -C "$BACKUP_DIR" .
+
+    echo "Backup updated and compressed: $BACKUP_DIR/$ARCHIVE_NAME"
+done
+```
+
+#### Explanation:
+- `inotifywait -m -e create`: Monitors the directory for new files.
+- `cp "$NEW_FILE" "$BACKUP_DIR"`: Copies the new file to the backup directory.
+- `tar -czf "$ARCHIVE_NAME"`: Compresses the updated backup.
+- The script continuously listens for changes and updates the backup dynamically.
+
+---
+
+### Summary:
+These scripts address the given exercises:
+1. **Check if the input is a directory** using the `-d` option.
+2. **Compress backups** with `tar`.
+3. **Monitor CPU usage** using `top`.
+4. **Combine directory monitoring and backup** using `inotifywait`.
+
+Each script provides functionality with clear feedback and can be further customized to suit your requirements. Let me know if you need more clarification!
 ### Best Practices  
 
 1. **Error Handling:**  
